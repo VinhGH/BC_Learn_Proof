@@ -7,6 +7,9 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 contract LearnProofCertificate is ERC721URIStorage, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     
+    // Internal counter for token IDs
+    uint256 private _nextTokenId;
+    
     // Mapping to track if a certificate hash has already been minted
     mapping(string => bool) public isHashMinted;
 
@@ -21,14 +24,14 @@ contract LearnProofCertificate is ERC721URIStorage, AccessControl {
     /**
      * @dev Mints a new Soulbound Certificate.
      * @param to The address of the learner.
-     * @param tokenId The unique ID of the certificate.
      * @param uri The IPFS URI containing the metadata.
      * @param certHash The unique hash of the certificate data to prevent duplicates.
      */
-    function mint(address to, uint256 tokenId, string memory uri, string memory certHash) public onlyRole(MINTER_ROLE) {
+    function mint(address to, string memory uri, string memory certHash) public onlyRole(MINTER_ROLE) {
         require(!isHashMinted[certHash], "SBT: Certificate hash already minted");
         isHashMinted[certHash] = true;
         
+        uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
         

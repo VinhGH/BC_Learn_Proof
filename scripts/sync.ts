@@ -14,10 +14,20 @@ async function main() {
 
   const artifact = JSON.parse(fs.readFileSync(artifactPath, 'utf8'));
 
+  // Read the deployed address if it exists
+  const addressPath = path.join(__dirname, 'deployed-address.json');
+  let contractAddress = "";
+  if (fs.existsSync(addressPath)) {
+    const deployInfo = JSON.parse(fs.readFileSync(addressPath, 'utf8'));
+    contractAddress = deployInfo.address;
+    console.log(`📡 Found deployed address: ${contractAddress}`);
+  } else {
+    console.warn("⚠️ No deployed-address.json found. Syncing only ABI.");
+  }
+
   const dataToExport = {
     abi: artifact.abi,
-    // Add deployed address manually if needed later, or read from a deployed network file
-    // address: "0x..." 
+    address: contractAddress,
   };
 
   const fileContent = JSON.stringify(dataToExport, null, 2);
