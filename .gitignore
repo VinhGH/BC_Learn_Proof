@@ -1,0 +1,6 @@
+# Tạo file .gitignore đơn giản cho Hardhat/Node.js
+/node_modules
+.env
+/artifacts
+/cache
+/typechain-types
